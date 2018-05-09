@@ -15,6 +15,12 @@ services:
       - POSTGRES_PASS=docker
     network_mode: "bridge"
 
+  codenvy:
+    image: codenvy/che-ip:nightly
+    network_mode: "host"
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+
   django:
     build: docker-geonode
     volumes:
@@ -23,6 +29,7 @@ services:
       - '../src/geonode/geonode/static_root:/home/web/static'
       - '../src/geonode/geonode/uploaded:/home/web/media'
       - './logs:/var/log/'
+      - '/var/run/docker.sock:/var/run/docker.sock'
     command: prod
     environment:
       - DATABASE_URL=postgres://docker:docker@postgis:5432/gis
@@ -42,6 +49,7 @@ services:
     links:
       - postgis
       - rabbitmq
+      - codenvy
     network_mode: "bridge"
 
   web:
